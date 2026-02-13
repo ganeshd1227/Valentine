@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Be My Valentine?</title>
+    <style>
+        /* 1. Beautiful Unique Background */
+        body {
+            margin: 0;
+            overflow: hidden;
+            /* Prevents scrollbars from the animation */
+            background: #000;
+            /* Deep black makes the hearts glow */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        #heartCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            /* Puts it behind your text/buttons */
+            background: linear-gradient(to bottom, #0a0002, #250005);
+        }
+
+        /* Keep your existing content styles here, but ensure they have z-index */
+        .content-wrapper {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            /* Add your existing text/button styling below */
+        }
+
+        @keyframes gradient {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        /* 2. The Center Small Box */
+        .container {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 40px;
+            border-radius: 24px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            width: 380px;
+            min-height: 300px;
+            position: relative;
+            color: white;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .sub-text {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            height: 50px;
+        }
+
+        button {
+            padding: 12px 28px;
+            border: none;
+            border-radius: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 1rem;
+        }
+
+        #yesBtn {
+            background: #ff4d6d;
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 77, 109, 0.4);
+        }
+
+        #noBtn {
+            background: white;
+            color: #333;
+            z-index: 100;
+        }
+
+        /* Secret Section */
+        #secretArea {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .code-display {
+            font-size: 3rem;
+            font-weight: 800;
+            letter-spacing: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px 20px;
+            border-radius: 10px;
+            margin: 10px 0;
+            border: 2px solid white;
+        }
+
+        .action-btns {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 100%;
+        }
+
+        .copy-btn {
+            background: #4cc9f0;
+            color: white;
+            width: 100%;
+        }
+
+        .next-btn {
+            background: #7209b7;
+            color: white;
+            width: 100%;
+            display: none;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <canvas id="heartCanvas"></canvas>
+
+    <div class="container" id="mainBox">
+        <div id="questionArea">
+            <h1>Happy Valentine's Day! Papa</h1>
+            <p class="sub-text">Will you Marry Me Papa ?</p>
+
+            <div class="btn-group">
+                <button id="yesBtn">Yes</button>
+                <button id="noBtn">No</button>
+            </div>
+        </div>
+
+        <div id="secretArea">
+            <p>You said YES! ❤️ Here is your code:</p>
+            <div class="code-display" id="digitCode">0000</div>
+
+            <div class="action-btns">
+                <button class="copy-btn" id="copyBtn">📋 Copy Code</button>
+                <button class="next-btn" id="nextBtn">Go to Next Page ➔</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast">Code copied to clipboard!</div>
+
+    <script>
+
+        // 3. The Heart Particle Logic
+        const canvas = document.getElementById('heartCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let particles = [];
+        const particleCount = 60;
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        window.addEventListener('resize', resize);
+        resize();
+
+        class HeartParticle {
+            constructor() {
+                this.reset();
+            }
+
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = canvas.height + Math.random() * 100;
+                this.size = Math.random() * 15 + 5;
+                this.speed = Math.random() * 1 + 0.5;
+                this.opacity = Math.random() * 0.5 + 0.2;
+                this.swing = Math.random() * 2;
+                this.swingSpeed = Math.random() * 0.02;
+                this.angle = Math.random() * Math.PI;
+            }
+
+            update() {
+                this.y -= this.speed;
+                this.angle += this.swingSpeed;
+                this.x += Math.sin(this.angle) * this.swing;
+
+                if (this.y < -20) {
+                    this.reset();
+                }
+            }
+
+            draw() {
+                ctx.fillStyle = `rgba(255, 77, 109, ${this.opacity})`;
+                ctx.font = `${this.size}px serif`;
+                // Drawing a heart shape using text is efficient for backgrounds
+                ctx.fillText('❤️', this.x, this.y);
+            }
+        }
+
+        function init() {
+            particles = [];
+            for (let i = 0; i < particleCount; i++) {
+                particles.push(new HeartParticle());
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Add a subtle glow to the whole canvas
+            ctx.shadowBlur = 15;
+            ctx.shadowColor = '#ff4d6d';
+
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+
+            requestAnimationFrame(animate);
+        }
+
+        init();
+        animate();
+
+
+
+        const noBtn = document.getElementById('noBtn');
+        const yesBtn = document.getElementById('yesBtn');
+        const questionArea = document.getElementById('questionArea');
+        const secretArea = document.getElementById('secretArea');
+        const digitCode = document.getElementById('digitCode');
+        const nextBtn = document.getElementById('nextBtn');
+        const copyBtn = document.getElementById('copyBtn');
+        const container = document.getElementById('mainBox');
+
+        // 1. "No" button move logic
+        noBtn.addEventListener('mouseover', () => {
+            noBtn.style.position = 'absolute';
+            const maxX = container.clientWidth - noBtn.clientWidth - 20;
+            const maxY = container.clientHeight - noBtn.clientHeight - 20;
+
+            const randomX = Math.floor(Math.random() * maxX);
+            const randomY = Math.floor(Math.random() * maxY);
+
+            noBtn.style.left = randomX + 'px';
+            noBtn.style.top = randomY + 'px';
+        });
+
+        // 2. "Yes" button logic: Generate 4-digit code
+        yesBtn.addEventListener('click', () => {
+            questionArea.style.display = 'none';
+            secretArea.style.display = 'flex';
+
+            // Generate random 4-digit number
+            const randomCode = Math.floor(1000 + Math.random() * 9000);
+            digitCode.innerText = randomCode;
+            // Add this line inside your yesBtn click event on Page 1
+            localStorage.setItem('valentineCode', randomCode);
+        });
+
+        // 3. Copy Code Logic
+        copyBtn.addEventListener('click', () => {
+            const code = digitCode.innerText;
+            navigator.clipboard.writeText(code).then(() => {
+                // Show toast
+                const toast = document.getElementById('toast');
+                toast.style.display = 'block';
+                setTimeout(() => toast.style.display = 'none', 2000);
+
+                // Reveal the "Next Page" button after copying
+                nextBtn.style.display = 'block';
+            });
+        });
+
+        // 4. Move to next page
+        nextBtn.addEventListener('click', () => {
+            // alert("Moving to the next stage of our surprise...");
+            window.location.href = "nextpage.html"; // Uncomment this when you have the next page!
+        });
+    </script>
+</body>
+
+</html>
