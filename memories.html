@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Eternal Story</title>
+    <link rel="shortcut icon" href="Images/heart-2.png" type="image/x-icon">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;600&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --hot-pink: #ff4d6d;
+            --soft-bg: #fff0f3;
+        }
+
+        body {
+            background: var(--soft-bg);
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        h1 {
+            font-family: 'Dancing Script', cursive;
+            color: var(--hot-pink);
+            font-size: 4rem;
+            text-align: center;
+            margin: 60px 0 20px;
+        }
+
+        /* --- TIMELINE --- */
+        .timeline-container {
+            position: relative;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 0;
+        }
+
+        .timeline-container::after {
+            content: '';
+            position: absolute;
+            width: 2px;
+            background: var(--hot-pink);
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: -1px;
+            opacity: 0.15;
+        }
+
+        .memory-item {
+            padding: 20px 0;
+            position: relative;
+            width: 50%;
+            display: flex;
+            align-items: center;
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s ease-out;
+            min-height: 300px;
+        }
+
+        .memory-item.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .left {
+            left: 0;
+            flex-direction: row-reverse;
+            padding-right: 40px;
+        }
+
+        .right {
+            left: 50%;
+            flex-direction: row;
+            padding-left: 40px;
+        }
+
+        /* --- PHOTO --- */
+        .photo-frame {
+            width: 200px;
+            height: 280px;
+            border: 10px solid white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            z-index: 10;
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            flex-shrink: 0;
+        }
+
+        .photo-frame:hover {
+            transform: scale(1.05);
+            border-color: var(--hot-pink);
+        }
+
+        .photo-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* --- MESSAGE BOX --- */
+        .event-side-box {
+            position: absolute;
+            width: 350px;
+            /* Fixed width for stability */
+            max-height: 250px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            opacity: 0;
+            visibility: hidden;
+            /* Prevents clicking hidden boxes */
+            transition: all 0.7s cubic-bezier(0.19, 1, 0.22, 1);
+            z-index: 5;
+        }
+
+        /* Large Gap Logic */
+        .left .event-side-box {
+            right: 320px;
+            transform: translateX(100px) scale(0.9);
+        }
+
+        /* Right Side: Initial state pushed left, hidden */
+        .right .event-side-box {
+            left: 320px;
+            transform: translateX(-100px) scale(0.9);
+        }
+
+        /* Active State: Glides into position and fades in */
+        .event-side-box.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(0) scale(1);
+        }
+
+        .photo-frame {
+            position: relative;
+            /* Needed for the overlay to stay inside */
+            width: 200px;
+            height: 280px;
+            background: #eee;
+            /* Placeholder color if image fails */
+            cursor: pointer;
+            z-index: 10;
+            overflow: hidden;
+            border: 10px solid white;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .click-hint {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 77, 109, 0.7);
+            /* Darker so text shows */
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.8rem;
+            z-index: 20;
+            opacity: 1;
+            /* Always visible on the last card to be clear */
+            transition: opacity 0.3s;
+        }
+
+        .event-side-box h3 {
+            margin: 0;
+            color: var(--hot-pink);
+            font-family: 'Dancing Script';
+            font-size: 2.5rem;
+            /* Header stays aligned to the side it belongs to */
+        }
+
+        .left .event-side-box h3 {
+            text-align: right;
+        }
+
+        .right .event-side-box h3 {
+            text-align: left;
+        }
+
+        .event-side-box p {
+            font-size: 1.15rem;
+            color: #555;
+            margin-top: 15px;
+            line-height: 1.6;
+            /* THE FIX: Justify text for a clean paragraph look */
+            text-align: justify;
+            text-justify: inter-word;
+        }
+
+        /* --- FINALE --- */
+        #finalOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            z-index: 9999;
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .final-text {
+            color: white;
+            font-family: 'Dancing Script';
+            font-size: 3rem;
+            text-align: center;
+            opacity: 0;
+            transition: 2s;
+        }
+
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Our Life Journey</h1>
+
+    <div class="timeline-container" id="timeline"></div>
+
+    <div id="finalOverlay">
+        <canvas id="finalCanvas"></canvas>
+        <div class="final-text" id="finalText"></div>
+    </div>
+
+    <script>
+        // ... (Same memories array as before)
+        const memories = [
+            { date: "9 Jun <br> Holding hands with love", event: "First Hand Hold", msg: "The travel time is not a long time 'minutes or hours', holding in your hand's, I feel first time the time never losoing you, and I decided you are my <strong>everything </strong>.", img: "Images/hand-holds-2.jpg" },
+            { date: "23 Jul <br> Bus Travel Hold your hands", event: "Travel Long", msg: "Laughter, and sweet talking with long time to spend for you, I feel one of the most happiest travel for my heart.", img: "Images/bus-travel-3.jpg" },
+            { date: "28 March <br> I give a chocolate, You give me a slap.", event: "Chocolate and Slap", msg: "The day happily buy the chocolate for you and completely different feel see for you papa, but I give the chocolate for you in bus and that a minute suddenly slap for my cheeks unpexpected twist for me papa!..", img: "Images/choco-1.jpg" },
+            { date: "2 Aug <br> Papa first time u hug meeee! ", event: "First Flower", msg: "The day you will be hug me for few seconds and I love more for live with the my life era", img: "Images/hug-2.jpg" },
+            { date: "3 Aug <br> First time you will proposed to me!", event: "First time you will proposed to me", msg: "I didn't expect for that you will proposed to me for this travel, and I can be never explain how to feel I'm inside, few second I stuck to breathing, the moment you will create my life's best for all of my feelings. <strong> ThnkYou ammu expose your feeling's.", img: "Images/propose-3.jpg" },
+            { date: "09 August <br> I will buy Jasmine flower for you!", event: " Jasmine flower", msg: "Something, you'd say you can be brought a jasmine flower for me. I feel so happy first time you would say brought a flower for me, it's a good deep feel for me the flower bought for you.", img: "Images/flower-3.jpg" },
+            { date: "2 Septemper <br> First time to Visit Chennai!", event: "First time to chennai", msg: "First time visit to chennai for you to meet again for my love and, I didn't expect that day made be special for me the cute surprise and the day spend for me, but last I want to go very sad to feel because leaving for you, But the day you will be spend one of the most everything.", img: "Images/train-1.jpg" },
+            { date: "13 Septemper", event: "Love train travel", msg: "You will be run and hug with more love to see mee for the train, I didn't expect you will be see them for that love I will be love more the travel, and I also miss that love....", img: "Images/train-2.jpg" },
+            { date: "14 Septemper <br> Engaged with Rings exchange", event: "Engaged with Rings", msg: "Engagement ring can be change to ourself that time I will be decided to you are my future wife!, and then to my future only for you papa...", img: "Images/engage-1.jpg" },
+            { date: "19 Septemper <br> Our's first temple date", event: "Temple Date", msg: "It's our first temple date, and then go for the first temple <strong>'Sri Balasubramaniyar Thirukovil'</strong>, and to go move forward for the 3 to 4 tmeples. And then Murugar Kovil <strong>'Saffron'</strong> you will remember !...", img: "Images/murugar-1.jpg" },
+            { date: "27 January <br> Best surprise to me!", event: "Birthday", msg: "Surprise of the day very very happy for my birthday you will surprise to me I fully enjoyed the day lusu, that Cake surprise it is the best of one first love surprise birthday Thank You di lusu...", img: "Images/cake-2.jpg" },
+            { date: "07 February <br> Rose Day", event: "Engaged with Rings", msg: "It's our first rose day, you said first I celebrate the rose day, that sound I feel very happy, and your face reddish to change for the seeing the flowers it's looks soo Good.. I Love You So Much ..", img: "Images/rose-2.jpg" },
+            { date: "14 February <br> Valentine's Day", event: "Engaged with Rings", msg: "Finally, the day is come <span style='font-family: cursive; color:rgb(255, 41, 77);'> Happy Valentine's Day Dear: Pontatti</span> we are not celeberating the day, but it cuould be special to me because <strong style='color:rgb(255, 41, 77);'> 'I Love You dii lusu' </strong>, one day we are celeberating the valentine's day I'm waiting for the day 'I love you pattu'......", img: "Images/valen-1.jpg" },
+            { date: "ThankYou for All", event: "Engaged with Rings", msg: "Thank you for coming to my life and I think you read all the memories...", img: "Images/propose-1.jpg" }
+        ];
+
+        const timeline = document.getElementById('timeline');
+
+        memories.forEach((m, i) => {
+            const side = i % 2 === 0 ? 'left' : 'right';
+            const isLast = i === memories.length - 1; // Correctly targets the 14th item
+            const item = document.createElement('div');
+            item.className = `memory-item ${side}`;
+
+            // Structure fix: Ensure the overlay is a direct child of the photo-frame
+            item.innerHTML = `
+            <div class="photo-frame" id="photo-${i}" ${isLast ? `onclick="handleFinalClick(${i})"` : ''}>
+                <img src="${m.img}" alt="memory" style="width:100%; height:100%; object-fit:cover;">
+                ${isLast ? `<div class="click-hint">Tap Me ❤️</div>` : ''}
+            </div>
+            <div class="event-side-box" id="box-${i}">
+                <h3 style="text-align: ${side === 'left' ? 'right' : 'left'}">${m.date}</h3>
+                <p style="text-align: justify;">${m.msg}</p>
+            </div>
+        `;
+            timeline.appendChild(item);
+        });
+
+        const autoObserver = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                // Find the index of the current entry
+                const allItems = Array.from(document.querySelectorAll('.memory-item'));
+                const index = allItems.indexOf(entry.target);
+                const isLast = index === memories.length - 1;
+                const box = document.getElementById(`box-${index}`);
+
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    // Only auto-open if it is NOT the last one
+                    if (!isLast) {
+                        box.classList.add('active');
+                    }
+                } else {
+                    // Smoothly hide when scrolling away
+                    box.classList.remove('active');
+                }
+            });
+        }, {
+            rootMargin: '-25% 0px -25% 0px',
+            threshold: 0.4
+        });
+
+        document.querySelectorAll('.memory-item').forEach(el => autoObserver.observe(el));
+
+        function handleFinalClick(i) {
+            const box = document.getElementById(`box-${i}`);
+            const hint = document.querySelector('.click-hint');
+
+            // Hide the "Tap Me" hint when clicked
+            if (hint) hint.style.opacity = '0';
+
+            // Show final message
+            box.classList.add('active');
+
+            // Transition to Infinite Finale after 5 seconds
+            setTimeout(() => {
+                showFinalThankYou();
+            }, 5000);
+        }
+
+        function showFinalThankYou() {
+            const overlay = document.getElementById('finalOverlay');
+            overlay.style.display = 'flex';
+
+            // Ensure overlay doesn't fade out
+            overlay.style.opacity = "1";
+
+            const canvas = document.getElementById('finalCanvas');
+            const ctx = canvas.getContext('2d');
+
+            // Set canvas to full screen
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            const textDiv = document.getElementById('finalText');
+            textDiv.innerHTML = ` I thank for everything. <br>
+                        You came to my life is very Happy moment of them. <br>
+                        I will be live the life only for you papa...<br>
+                        I Love You So much di Lusu!!... <br><br>
+                        <strong style="font-style: cursive; color: #ff4d6d; font-size: 1.2em;">Forever and Always.</strong>`;
+
+            let hearts = [];
+
+            function createHeart() {
+                return {
+                    x: canvas.width / 2,
+                    y: canvas.height / 2,
+                    // Random velocity for the explosion effect
+                    vx: (Math.random() - 0.5) * 12,
+                    vy: (Math.random() - 0.5) * 12,
+                    size: Math.random() * 25 + 10,
+                    color: `hsl(${Math.random() * 30 + 340}, 100%, 70%)`,
+                    opacity: 1,
+                    fade: Math.random() * 0.01 + 0.005 // Random fade speed for variety
+                };
+            }
+
+            function draw() {
+                // Clear with a very slight trail for motion blur
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                // Keep creating new hearts infinitely
+                if (hearts.length < 200) {
+                    hearts.push(createHeart());
+                }
+
+                hearts.forEach((h, index) => {
+                    h.x += h.vx;
+                    h.y += h.vy;
+                    h.opacity -= h.fade;
+
+                    ctx.globalAlpha = h.opacity;
+                    ctx.fillStyle = h.color;
+                    ctx.font = `${h.size}px serif`;
+                    ctx.fillText('❤️', h.x, h.y);
+
+                    // If a heart is invisible, reset it to the center instead of removing it
+                    if (h.opacity <= 0) {
+                        hearts[index] = createHeart();
+                    }
+                });
+
+                ctx.globalAlpha = 1.0; // Reset alpha for text
+                requestAnimationFrame(draw);
+            }
+
+            // Start the infinite loop
+            draw();
+
+            // Show the text and keep it there
+            setTimeout(() => {
+                textDiv.style.opacity = 1;
+                textDiv.style.transform = "scale(1.1)";
+            }, 4500);
+
+            // REMOVED: The window.location.href redirect
+        }
+
+    </script>
+</body>
+
+</html>
