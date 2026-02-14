@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Our Love Story</title>
+
+    <link rel="shortcut icon" href="Images/heart-2.png" type="image/x-icon">
     <link
         href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@400;600&display=swap"
         rel="stylesheet">
@@ -33,6 +35,7 @@
         }
 
         .subtitle {
+            font-size: 30px;
             color: #888;
             margin-bottom: 40px;
             text-align: center;
@@ -197,7 +200,7 @@
     <div id="bg-animation-container"></div>
 
     <h1>Our Story Book</h1>
-    <p class="subtitle">Complete the dates to unlock the final secret...</p>
+    <p class="subtitle">Complete any 3 dates to unlock the final secret...</p>
 
     <div class="timeline-container" id="timeline">
         <div id="event-list"></div>
@@ -213,64 +216,70 @@
     <script>
 
         function createBackgroundHeart() {
-        const container = document.getElementById('bg-animation-container');
-        const heart = document.createElement('div');
-        
-        // Randomize appearance
-        const size = Math.random() * 30 + 10; // 10px to 40px
-        const duration = Math.random() * 10 + 10; // 10s to 20s
-        const left = Math.random() * 100; // 0 to 100%
-        
-        heart.className = 'bg-heart';
-        heart.innerHTML = '❤';
-        heart.style.fontSize = size + 'px';
-        heart.style.left = left + 'vw';
-        heart.style.animationDuration = duration + 's';
-        heart.style.opacity = '0';
-        
-        container.appendChild(heart);
+            const container = document.getElementById('bg-animation-container');
+            const heart = document.createElement('div');
 
-        // Remove heart after animation ends to save memory
-        setTimeout(() => {
-            heart.remove();
-        }, duration * 1000);
-    }
+            // Randomize appearance
+            const size = Math.random() * 30 + 10; // 10px to 40px
+            const duration = Math.random() * 10 + 10; // 10s to 20s
+            const left = Math.random() * 100; // 0 to 100%
 
-    // Generate hearts periodically
-    setInterval(createBackgroundHeart, 800);
+            heart.className = 'bg-heart';
+            heart.innerHTML = '❤';
+            heart.style.fontSize = size + 'px';
+            heart.style.left = left + 'vw';
+            heart.style.animationDuration = duration + 's';
+            heart.style.opacity = '0';
 
-    // Initial burst of hearts
-    for(let i = 0; i < 15; i++) {
-        setTimeout(createBackgroundHeart, Math.random() * 5000);
-    }
+            container.appendChild(heart);
+
+            // Remove heart after animation ends to save memory
+            setTimeout(() => {
+                heart.remove();
+            }, duration * 1000);
+        }
+
+        // Generate hearts periodically
+        setInterval(createBackgroundHeart, 800);
+
+        // Initial burst of hearts
+        for (let i = 0; i < 15; i++) {
+            setTimeout(createBackgroundHeart, Math.random() * 5000);
+        }
 
 
 
 
         const events = [
             { id: "hold", name: "1. First Hand Hold ", year: "2025" },
-            { id: "birthday", name: "2. Birthday ", year: "2025" },
-            { id: "travel", name: "3. First Travel ", year: "2025" },
-            { id: "chocoslap", name: "4. First Chocolate & Slap ", year: "2025" },
-            { id: "hug", name: "5. First Hug ", year: "2025" },
-            { id: "proposal", name: "6. Proposal", year: "2025" },
-            { id: "js", name: "7. First Flower", year: "2025" },
-            { id: "vc", name: "8. Chennai", year: "2025" },
-            { id: "tt", name: "9. Train Travel", year: "2025" },
-            { id: "er", name: "10. Enaged Ring", year: "2025" },
-            { id: "td", name: "11. Temple Date", year: "2025" },
-            { id: "fv", name: "12. First Visit Surprise", year: "2026" }
+            // { id: "birthday", name: "2. Birthday ", year: "2025" },
+            // { id: "travel", name: "3. First Travel ", year: "2025" },
+            { id: "chocoslap", name: "2. First Chocolate & Slap ", year: "2025" },
+            // { id: "hug", name: "5. First Hug ", year: "2025" },
+            { id: "proposal", name: "3. You Proposed Me ", year: "2025" },
+            { id: "js", name: "4. First Flower", year: "2025" },
+            { id: "vc", name: "5. First Chennai & Beach", year: "2025" },
+            { id: "tt", name: "6. Train Travel", year: "2025" },
+            { id: "er", name: "7. Enaged Ring", year: "2025" },
+            // { id: "td", name: "11. Temple Date", year: "2025" },
+            { id: "fv", name: "8. First Visit Surprise", year: "2026" }
         ];
 
         // IMPORTANT: Set your correct dates here
         // Note: Ensure the 'd' value matches what you type (e.g., "10" or "05")
         const correctDates = {
-            hold: { d: "9", m: "Jun" }, birthday: { d: "14", m: "Jun" }, travel: { d: "23", m: "Jul" },
-            chocoslap: { d: "28", m: "Jul" }, hug: { d: "2", m: "Aug" }, proposal: { d: "3", m: "Aug" },
+            hold: { d: "9", m: "Jun" },
+            // birthday: { d: "14", m: "Jun" }, 
+            // travel: { d: "23", m: "Jul" },
+            chocoslap: { d: "28", m: "Jul" },
+            // hug: { d: "2", m: "Aug" }, 
+            proposal: { d: "3", m: "Aug" },
             js: { d: "9", m: "Aug" },
             vc: { d: "2", m: "Sep" }, // <--- Fixed Aug Check 
-            tt: { d: "13", m: "Sep" }, er: { d: "14", m: "Sep" },
-            td: { d: "19", m: "Sep" }, fv: { d: "13", m: "Jan" }
+            tt: { d: "13", m: "Sep" },
+            er: { d: "14", m: "Sep" },
+            // td: { d: "19", m: "Sep" }, 
+            fv: { d: "13", m: "Jan" }
         };
         const listCont = document.getElementById('event-list');
 
@@ -315,7 +324,7 @@
                 }
             });
 
-            if (correctCount === 12) triggerFinalAnimation();
+            if (correctCount === 3) triggerFinalAnimation();
         });
 
         // ... (Keep your triggerFinalAnimation function here) ...
@@ -330,33 +339,75 @@
 
             let particles = [];
             const heartPoints = [];
+
+            // Define Heart Shape
             for (let i = 0; i < Math.PI * 2; i += 0.04) {
-                let x = 16 * Math.pow(Math.sin(i), 3); let y = -(13 * Math.cos(i) -
-                    5 * Math.cos(2 * i) - 2 * Math.cos(3 * i) - Math.cos(4 * i)); heartPoints.push({
-                        x: x * 15, y: y * 15
-                    });
-            } for (let i = 0; i < 600; i++) {
+                let x = 16 * Math.pow(Math.sin(i), 3);
+                let y = -(13 * Math.cos(i) - 5 * Math.cos(2 * i) - 2 * Math.cos(3 * i) - Math.cos(4 * i));
+                heartPoints.push({ x: x * 15, y: y * 15 });
+            }
+
+            // INCREASED INITIAL SPEED: particles now have a much stronger "pull" (0.08 - 0.12)
+            for (let i = 0; i < 600; i++) {
                 particles.push({
-                    x: Math.random() * canvas.width, y: Math.random() *
-                        canvas.height, target: heartPoints[i % heartPoints.length], size: Math.random() * 3 + 1, speed:
-                        Math.random() * 0.03 + 0.01, angle: Math.random() * Math.PI * 2, color: `hsl(${Math.random() * 20 +
-                            340}, 100%, 70%)`
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    target: heartPoints[i % heartPoints.length],
+                    size: Math.random() * 3 + 1,
+                    speed: Math.random() * 0.08 + 0.04, // Fast attraction speed
+                    angle: Math.random() * Math.PI * 2,
+                    color: `hsl(${Math.random() * 20 + 340}, 100%, 70%)`
                 });
-            } let frame = 0; function animate() {
-                ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
-                ctx.fillRect(0, 0, canvas.width, canvas.height); particles.forEach(p => {
+            }
+
+            let frame = 0;
+
+            function animate() {
+                // Darker trail for a cleaner high-speed look
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                particles.forEach(p => {
                     const tx = p.target.x + canvas.width / 2;
                     const ty = p.target.y + canvas.height / 2;
-                    if (frame < 80) { p.x += Math.cos(p.angle) * 8; p.y += Math.sin(p.angle) * 8; p.angle += 0.15; } else {
-                        p.x
-                            += (tx - p.x) * p.speed; p.y += (ty - p.y) * p.speed;
-                    } ctx.fillStyle = p.color; ctx.beginPath();
-                    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2); ctx.fill();
-                }); frame++; if (frame === 140)
-                    document.getElementById('msgText').classList.add('show-text'); requestAnimationFrame(animate);
+
+                    if (frame < 30) {
+                        // FAST SWIRL: Increased from 8 to 25, and rotation from 0.15 to 0.5
+                        p.x += Math.cos(p.angle) * 25;
+                        p.y += Math.sin(p.angle) * 25;
+                        p.angle += 0.5;
+                    } else {
+                        // FAST ASSEMBLY: Particles snap to position
+                        p.x += (tx - p.x) * p.speed;
+                        p.y += (ty - p.y) * p.speed;
+                    }
+
+                    ctx.fillStyle = p.color;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                    ctx.fill();
+                });
+
+                frame++;
+
+                // TEXT REVEAL: Triggered much earlier (at frame 60 instead of 140)
+                if (frame === 60) {
+                    document.getElementById('msgText').classList.add('show-text');
+
+                    // AUTOMATIC REDIRECT: Goes to memories.html after the fast animation
+                    setTimeout(() => {
+                        window.location.href = 'memories.html';
+                    }, 2500);
+                }
+
+                requestAnimationFrame(animate);
             }
             animate();
-        } </script>
+        }
+        animate();
+    
+
+    </script>
 </body>
 
 </html>
