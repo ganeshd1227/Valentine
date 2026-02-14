@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Our Love Story</title>
+
+    <link rel="shortcut icon" href="Images/heart-2.png" type="image/x-icon">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@400;600&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --hot-pink: #ff4d6d;
+            --soft-pink: #fff0f3;
+            --glass-white: rgba(255, 255, 255, 0.95);
+        }
+
+        body {
+            background: var(--soft-pink);
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        /* Responsive Headlines */
+        h1 {
+            font-family: 'Dancing Script', cursive;
+            color: var(--hot-pink);
+            font-size: clamp(2rem, 8vw, 3.5rem);
+            /* Scales between mobile and PC */
+            margin: 10px 0;
+            text-align: center;
+        }
+
+        .subtitle {
+            font-size: clamp(14px, 4vw, 18px);
+            color: #888;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        /* The Container - Adaptive Width */
+        .timeline-container {
+            background: var(--glass-white);
+            padding: clamp(15px, 5vw, 30px);
+            border-radius: 30px;
+            box-shadow: 0 15px 50px rgba(255, 77, 109, 0.15);
+            width: 100%;
+            max-width: 700px;
+            /* Wider for PC */
+            z-index: 5;
+            box-sizing: border-box;
+        }
+
+        .event-card {
+            display: flex;
+            flex-direction: column;
+            padding: 20px 10px;
+            border-bottom: 1px solid #ffe5ec;
+            transition: all 0.3s ease;
+        }
+
+        /* Row Layout for PC, Column for Mobile */
+        @media (min-width: 600px) {
+            .event-card {
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+                gap: 20px;
+            }
+
+            .label {
+                margin-bottom: 0 !important;
+                flex: 1;
+            }
+
+            .input-row {
+                flex: 1;
+                justify-content: flex-end;
+            }
+        }
+
+        .event-card.correct {
+            background: #f1fcf1;
+            border-radius: 20px;
+            border-bottom-color: transparent;
+            transform: scale(1.01);
+        }
+
+        .label {
+            font-weight: 600;
+            color: #444;
+            margin-bottom: 12px;
+            font-size: 1rem;
+        }
+
+        .input-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        /* Modern Styled Inputs */
+        input.day-in {
+            width: 55px;
+            padding: 10px;
+            border: 2px solid #ffccd5;
+            border-radius: 12px;
+            text-align: center;
+            font-size: 16px;
+            /* Prevents iOS zoom */
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        select.month-sel {
+            padding: 10px;
+            border: 2px solid #ffccd5;
+            border-radius: 12px;
+            background: white;
+            font-size: 16px;
+            outline: none;
+            min-width: 100px;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: var(--hot-pink);
+        }
+
+        .year-tag {
+            font-weight: bold;
+            color: #ff85a1;
+            min-width: 50px;
+            text-align: center;
+        }
+
+        .status {
+            font-size: 1.5rem;
+            min-width: 30px;
+            text-align: center;
+        }
+
+        /* Final Secret Overlay */
+        #finalOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            z-index: 9999;
+            display: none;
+        }
+
+        .ultimate-msg {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            font-family: 'Dancing Script', cursive;
+            font-size: clamp(1.8rem, 6vw, 3.5rem);
+            color: white;
+            text-align: center;
+            width: 90%;
+            text-shadow: 0 0 20px #ff4d6d;
+            opacity: 0;
+            transition: all 2s ease;
+        }
+
+        .show-text {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        /* Floating Background */
+        #bg-animation-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: radial-gradient(circle at center, #fff0f3 0%, #ffe5ec 100%);
+            overflow: hidden;
+        }
+
+        .bg-heart {
+            position: absolute;
+            color: rgba(255, 77, 109, 0.2);
+            animation: floatUp linear infinite;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(110vh) rotate(0deg);
+                opacity: 0;
+            }
+
+            10% {
+                opacity: 0.5;
+            }
+
+            90% {
+                opacity: 0.5;
+            }
+
+            100% {
+                transform: translateY(-20vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="bg-animation-container"></div>
+
+    <h1>Our Story Book</h1>
+    <p class="subtitle">Match the dates of our memories to unlock the secret...</p>
+
+    <div class="timeline-container" id="timeline">
+        <div id="event-list"></div>
+    </div>
+
+    <div id="finalOverlay">
+        <canvas id="finalCanvas"></canvas>
+        <div class="ultimate-msg" id="msgText">
+            I love you more than you <br> could ever imagine. ❤️
+        </div>
+    </div>
+
+    <script>
+        // --- Floating Hearts Background ---
+        function createHeart() {
+            const container = document.getElementById('bg-animation-container');
+            const heart = document.createElement('div');
+            heart.className = 'bg-heart';
+            heart.innerHTML = '❤';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.fontSize = (Math.random() * 20 + 10) + 'px';
+            const duration = Math.random() * 5 + 10;
+            heart.style.animationDuration = duration + 's';
+            container.appendChild(heart);
+            setTimeout(() => heart.remove(), duration * 1000);
+        }
+        setInterval(createHeart, 1000);
+
+        // --- Memory Data ---
+        const events = [
+            { id: "hold", name: "1. First Hand Hold", year: "2025" },
+            { id: "chocoslap", name: "2. First Chocolate & Slap", year: "2025" },
+            { id: "proposal", name: "3. You Proposed Me", year: "2025" },
+            { id: "js", name: "4. First Flower", year: "2025" },
+            { id: "vc", name: "5. First Chennai & Beach", year: "2025" },
+            { id: "tt", name: "6. Train Travel", year: "2025" },
+            { id: "er", name: "7. Engaged Ring", year: "2025" },
+            { id: "fv", name: "8. First Visit Surprise", year: "2026" }
+        ];
+
+        const correctDates = {
+            hold: { d: "9", m: "Jun" },
+            chocoslap: { d: "28", m: "Jul" },
+            proposal: { d: "3", m: "Aug" },
+            js: { d: "9", m: "Aug" },
+            vc: { d: "2", m: "Sep" },
+            tt: { d: "13", m: "Sep" },
+            er: { d: "14", m: "Sep" },
+            fv: { d: "13", m: "Jan" }
+        };
+
+        const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        const listCont = document.getElementById('event-list');
+
+        // Render List
+        events.forEach(ev => {
+            listCont.innerHTML += `
+            <div class="event-card" id="card-${ev.id}">
+                <div class="label">${ev.name}</div>
+                <div class="input-row">
+                    <input type="number" class="day-in" placeholder="DD" inputmode="numeric">
+                    <select class="month-sel">
+                        <option value="">Month</option>
+                        ${months.map(m => `<option value="${m}">${m}</option>`).join('')}
+                    </select>
+                    <span class="year-tag">${ev.year}</span>
+                    <span class="status"></span>
+                </div>
+            </div>
+            `;
+        });
+
+        // Live Validation
+        document.addEventListener('input', () => {
+            let correctCount = 0;
+            events.forEach(ev => {
+                const card = document.getElementById(`card-${ev.id}`);
+                const dVal = card.querySelector('.day-in').value.trim();
+                const mVal = card.querySelector('.month-sel').value;
+                const status = card.querySelector('.status');
+
+                if (Number(dVal) === Number(correctDates[ev.id].d) && mVal === correctDates[ev.id].m) {
+                    card.classList.add('correct');
+                    status.innerText = "✅";
+                    correctCount++;
+                } else {
+                    card.classList.remove('correct');
+                    status.innerText = "";
+                }
+            });
+
+            // Unlock at 3 correct answers
+            if (correctCount >= 3) {
+                setTimeout(triggerFinalAnimation, 600);
+            }
+        });
+
+        function triggerFinalAnimation() {
+            const overlay = document.getElementById('finalOverlay');
+            const canvas = document.getElementById('finalCanvas');
+            const ctx = canvas.getContext('2d');
+            overlay.style.display = 'block';
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            let particles = [];
+            const heartPoints = [];
+            const scale = Math.min(window.innerWidth / 40, 15);
+
+            for (let i = 0; i < Math.PI * 2; i += 0.04) {
+                let x = 16 * Math.pow(Math.sin(i), 3);
+                let y = -(13 * Math.cos(i) - 5 * Math.cos(2 * i) - 2 * Math.cos(3 * i) - Math.cos(4 * i));
+                heartPoints.push({ x: x * scale, y: y * scale });
+            }
+
+            for (let i = 0; i < 400; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    target: heartPoints[i % heartPoints.length],
+                    size: Math.random() * 2 + 1,
+                    speed: Math.random() * 0.1 + 0.05,
+                    color: `hsl(${Math.random() * 20 + 340}, 100%, 70%)`
+                });
+            }
+
+            let frame = 0;
+            function animate() {
+                ctx.fillStyle = 'rgba(0,0,0,0.15)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                particles.forEach(p => {
+                    const tx = p.target.x + canvas.width / 2;
+                    const ty = p.target.y + canvas.height / 2;
+                    p.x += (tx - p.x) * p.speed;
+                    p.y += (ty - p.y) * p.speed;
+                    ctx.fillStyle = p.color;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                    ctx.fill();
+                });
+                frame++;
+                if (frame === 40) document.getElementById('msgText').classList.add('show-text');
+                if (frame === 150) window.location.href = 'memories.html';
+                requestAnimationFrame(animate);
+            }
+            animate();
+        }
+    </script>
+</body>
+
+</html>
